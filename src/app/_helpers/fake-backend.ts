@@ -1,11 +1,16 @@
-﻿import { Injectable } from '@angular/core';
-import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
-
+﻿import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { User } from '@app/_models';
+import { Feedback } from '@app/_models/feedback';
+import { Projet } from '@app/_models/projet';
+import { Observable, of, throwError } from 'rxjs';
+import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
+
 
 const users: User[] = [{ id: 1, username: 'test', password: 'test', firstName: 'Test', lastName: 'User' }];
+
+const projets: Projet[] = [{ id: 1, libelle: 'test', description: 'description 1' }, { id: 2, libelle: 'libelle 2 ', description: 'description 2' }, { id: 3, libelle: 'libelle 3', description: 'description 3' }];
+const feedbacks: Feedback[] = [{ id: 1, note: 10, commentaire: 'commentaire 1', userId: 1, projetId: 1 }, { id: 2, note: 20, commentaire: 'commentaire 2', userId: 1, projetId: 2 }];
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -25,10 +30,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return authenticate();
                 case url.endsWith('/users') && method === 'GET':
                     return getUsers();
+                case url.endsWith('/projets') && method === 'GET':
+                    return getProjets();
+                case url.endsWith('/feedbacks') && method === 'GET':
+                    return getfeedbacks();
+                case url.endsWith('/feedbacks/1') && method === 'GET':
+                    return getfeedbacksByProjetId(1);
+                case url.endsWith('/feedbacks/2') && method === 'GET':
+                    return getfeedbacksByProjetId(2);
+                case url.endsWith('/feedbacks/3') && method === 'GET':
+                    return getfeedbacksByProjetId(3);
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
-            }    
+            }
         }
 
         // route functions
@@ -49,6 +64,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function getUsers() {
             if (!isLoggedIn()) return unauthorized();
             return ok(users);
+        }
+        function getProjets() {
+            if (!isLoggedIn()) return unauthorized();
+            return ok(projets);
+        }
+
+        function getfeedbacks() {
+            if (!isLoggedIn()) return unauthorized();
+            return ok(feedbacks);
+        }
+
+        function getfeedbacksByProjetId(projetId: number) {
+            if (!isLoggedIn()) return unauthorized();
+            return ok(feedbacks.filter(feed => feed.projetId == projetId));
         }
 
         // helper functions

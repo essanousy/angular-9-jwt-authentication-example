@@ -1,0 +1,10 @@
+<div class="card mt-4">
+  <h4 class="card-header">feedbacks</h4>
+  <div class="card-body">
+    <h6>feedbacks by project</h6>
+    <div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
+    <ul *ngIf="feedbacks">
+      <li *ngFor="let feedback of feedbacks">{{feedback.id}} {{feedback.note}}</li>
+    </ul>
+  </div>
+</div>

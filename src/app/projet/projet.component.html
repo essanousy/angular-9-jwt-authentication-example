@@ -1,0 +1,33 @@
+<div class="card mt-4">
+  <h4 class="card-header">Projets</h4>
+  <div class="card-body">
+
+    <h6>liste des Projets</h6>
+    <div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
+    <p>
+      <a [routerLink]="['/add']" class="btn btn-primary float-right mb-3">Nouveau Projet</a>
+    </p>
+
+    <table class="table table-sm table-hover" *ngIf="projets">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>libelle</th>
+          <th>Description</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let projet of projets">
+          <td>{{ projet.id }}</td>
+          <td><a [routerLink]="['/feedback/', projet.id]">{{ projet.libelle }}</a></td>
+          <td>{{ projet.description }}</td>
+          <td><a [routerLink]="['/projet/edit/', projet.id]" class="btn btn-primary btn-sm float-right">Edit</a>
+          </td>
+          <td><a [routerLink]="" (click)="onDelete(projet.id)" class="btn btn-danger btn-sm float-right">Delete</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,15 +1,15 @@
 ﻿import { Component } from '@angular/core';
-import { first } from 'rxjs/operators';
-
+import { Router } from '@angular/router';
 import { User } from '@app/_models';
-import { UserService, AuthenticationService } from '@app/_services';
+import { AuthenticationService, UserService } from '@app/_services';
+import { first } from 'rxjs/operators';
 
 @Component({ templateUrl: 'home.component.html' })
 export class HomeComponent {
     loading = false;
     users: User[];
 
-    constructor(private userService: UserService) { }
+    constructor(private userService: UserService, private authenticationService: AuthenticationService, private router: Router) { }
 
     ngOnInit() {
         this.loading = true;
@@ -17,5 +17,12 @@ export class HomeComponent {
             this.loading = false;
             this.users = users;
         });
+    }
+
+    onLogout() {
+        console.log("test logout")
+        this.authenticationService.logout();
+        this.router.navigate(["./login"]);
+        return;
     }
 }
